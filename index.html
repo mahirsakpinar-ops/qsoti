@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>QSOTI Arama Motoru</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .result { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<h1>QSOTI Arama Motoru</h1>
+
+<input id="query" type="text" placeholder="Bir şey ara..." style="width:300px;">
+<button onclick="search()">Ara</button>
+
+<div id="results"></div>
+
+<script>
+function search() {
+    const q = document.getElementById("query").value;
+
+    fetch(`/search?q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+            const box = document.getElementById("results");
+            box.innerHTML = "";
+
+            data.forEach(item => {
+                box.innerHTML += `
+                    <div class="result">
+                        <a href="${item.link}" target="_blank">${item.title}</a>
+                    </div>
+                `;
+            });
+        });
+}
+</script>
+
+</body>
+</html>
