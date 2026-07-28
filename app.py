@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 import requests
+from bs4 import BeautifulSoup
 import os
 from flask_cors import CORS
 
@@ -13,19 +14,22 @@ def index():
 @app.route("/search")
 def search():
     q = request.args.get("q")
-    url = f"https://api.duckduckgo.com/?q={q}&format=json"
+    url = f"https://duckduckgo.com/html/?q={q}"
 
     try:
         r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-        data = r.json()
+        soup = BeautifulSoup(r.text, "html.parser")
 
         results = []
-        for topic in data.get("RelatedTopics", []):
-            if "Text" in topic and "FirstURL" in topic:
+        for result in soup.select(".result"):
+            title_tag = result.select_one(".result__a")
+            snippet_tag = result.select_one(".result__snippet")
+
+            if title_tag:
                 results.append({
-                    "title": topic["Text"],
-                    "link": topic["FirstURL"],
-                    "snippet": topic["Text"]
+                    "title": title_tag.get_text(),
+                    "link": title_tag.get("href"),
+                    "snippet": snippet_tag.get_text() if snippet_tag else "Bu sonuç için ek açıklama bulunmuyor"
                 })
 
         return jsonify(results)
