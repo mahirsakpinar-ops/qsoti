@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory
 import requests
 from bs4 import BeautifulSoup
 import os
+from flask_cors import CORS
+CORS(app)
 
 app = Flask(__name__, static_folder="public")
 
