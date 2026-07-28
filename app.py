@@ -3,9 +3,9 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from flask_cors import CORS
-CORS(app)
 
 app = Flask(__name__, static_folder="public")
+CORS(app)
 
 @app.route("/")
 def index():
@@ -35,4 +35,3 @@ def search():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
