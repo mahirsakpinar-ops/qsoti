@@ -4,10 +4,7 @@ from bs4 import BeautifulSoup
 import os
 from flask_cors import CORS
 
-# Flask uygulamasını önce tanımla
 app = Flask(__name__, static_folder="public")
-
-# Sonra CORS'u aktif et
 CORS(app)
 
 @app.route("/")
@@ -24,11 +21,17 @@ def search():
         soup = BeautifulSoup(r.text, "html.parser")
 
         results = []
-        for a in soup.select(".result__a")[:20]:
-            results.append({
-                "title": a.get_text(),
-                "link": a.get("href")
-            })
+        # Her sonucu blok halinde al
+        for result in soup.select(".result"):
+            title_tag = result.select_one(".result__a")
+            snippet_tag = result.select_one(".result__snippet")
+
+            if title_tag:
+                results.append({
+                    "title": title_tag.get_text(),
+                    "link": title_tag.get("href"),
+                    "snippet": snippet_tag.get_text() if snippet_tag else "Bu sonuç için ek açıklama bulunmuyor"
+                })
 
         return jsonify(results)
 
