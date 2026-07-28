@@ -21,15 +21,16 @@ def search():
         soup = BeautifulSoup(r.text, "html.parser")
 
         results = []
-        # Her sonucu blok halinde al
+        # Her arama sonucunu blok halinde al
         for result in soup.select(".result"):
             title_tag = result.select_one(".result__a")
             snippet_tag = result.select_one(".result__snippet")
+            link_tag = title_tag["href"] if title_tag else None
 
-            if title_tag:
+            if title_tag and link_tag:
                 results.append({
                     "title": title_tag.get_text(),
-                    "link": title_tag.get("href"),
+                    "link": link_tag,
                     "snippet": snippet_tag.get_text() if snippet_tag else "Bu sonuç için ek açıklama bulunmuyor"
                 })
 
