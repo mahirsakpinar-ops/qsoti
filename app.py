@@ -4,7 +4,10 @@ from bs4 import BeautifulSoup
 import os
 from flask_cors import CORS
 
+# Flask uygulamasını önce tanımla
 app = Flask(__name__, static_folder="public")
+
+# Sonra CORS'u aktif et
 CORS(app)
 
 @app.route("/")
